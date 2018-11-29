@@ -1,0 +1,9 @@
+.dockerignore
+.env.docker
+.git
+.gitignore
+cloud-foundry
+docker
+docker-compose.yml
+Dockerfile
+manifest.example.yml
