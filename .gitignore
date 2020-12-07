@@ -1,1 +1,3 @@
 /manifest.yml
+.env.docker
+.idea

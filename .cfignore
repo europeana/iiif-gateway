@@ -2,6 +2,7 @@
 .env.docker
 .git
 .gitignore
+.idea
 cloud-foundry
 docker
 docker-compose.yml
