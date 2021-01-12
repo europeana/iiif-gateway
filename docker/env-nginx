@@ -2,7 +2,8 @@
 
 # Substitute env var strings in NGINX config with values from env
 
-vars='$PROXY_IMAGE_HOST
+vars='$PROXY_IMAGE_HOST_1
+      $PROXY_IMAGE_HOST_2
       $PROXY_PRESENTATION_MANIFEST_HOST
       $PROXY_PRESENTATION_FULLTEXT_API_KEY
       $PROXY_PRESENTATION_FULLTEXT_HOST'
