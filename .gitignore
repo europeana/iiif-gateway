@@ -1,3 +1,9 @@
-/manifest.yml
-.env.docker
+**/.env
+
+#IntelliJ project files
 .idea
+*.iml
+
+# Kubernetes config properties
+*.properties.yaml
+*.user.properties
