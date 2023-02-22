@@ -14,8 +14,6 @@ events {
 
 http {
   charset utf-8;
-  # EA-2236: Disable access logs
-  access_log off;
   default_type application/octet-stream;
   include mime.types;
   sendfile on;
