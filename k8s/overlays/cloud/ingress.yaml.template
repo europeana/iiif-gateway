@@ -46,7 +46,3 @@ spec:
             name: iiif-gateway-service
             port:
               number: 80
-  tls:
-  - hosts:
-    - ${K8S_HOSTNAME}
-    secretName: ${K8S_HOSTNAME_SECRET}
