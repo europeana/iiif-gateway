@@ -36,8 +36,7 @@ http {
 
   upstream iiif_image {
     keepalive 15;
-    server ${PROXY_IMAGE_HOST_1};
-    server ${PROXY_IMAGE_HOST_2};
+    server ${PROXY_IMAGE_HOST};
   }
 
   upstream iiif_presentation_manifest {
@@ -73,12 +72,12 @@ http {
 
     # IIIF Image (uses servers in upstream section)
     location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
-        proxy_set_header Host ${PROXY_IMAGE_HOST_1};
+        proxy_set_header Host ${PROXY_IMAGE_HOST};
         proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
     }
 
     location ~ ^/(records|data-providers)/(.*) {
-      proxy_set_header Host ${PROXY_IMAGE_HOST_1};
+      proxy_set_header Host ${PROXY_IMAGE_HOST};
       proxy_pass http://iiif_image/$1/$2;
     }
 
