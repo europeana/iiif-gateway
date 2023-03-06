@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iiif-gateway-api-ingress
+  annotations:
+    cert-manager.io/issuer: letsencrypt-production
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host:  ${K8S_HOSTNAME}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: iiif-gateway-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - ${K8S_HOSTNAME}
+    secretName: ${K8S_HOSTNAME_SECRET}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iiif-gateway-image-ingress
+  annotations:
+     cert-manager.io/issuer: letsencrypt-production
+     nginx.ingress.kubernetes.io/proxy-buffering: "on"
+     nginx.ingress.kubernetes.io/server-snippet: |
+       proxy_cache ${NGINX_PROXY_CACHE_ZONE};
+       proxy_cache_use_stale updating;
+       proxy_cache_valid 200 302 301 2h;
+       add_header X-Cache-Status $upstream_cache_status;
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host:  ${K8S_HOSTNAME}
+    http:
+      paths:
+      - path: /image
+        pathType: Prefix
+        backend:
+          service:
+            name: iiif-gateway-service
+            port:
+              number: 80
+  tls:
+    - hosts:
+        - ${K8S_HOSTNAME}
+      secretName: ${K8S_HOSTNAME_SECRET}

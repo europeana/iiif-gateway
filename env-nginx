@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Substitute env var strings in NGINX config with values from env
+# Also use default nameserver for resolving hostnames (necessary for k8s deployments so we can use service names)
+NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
+export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
+
+vars='$PROXY_IMAGE_HOST
+      $MANIFEST_API_HOST
+      $FULLTEXT_API_KEY
+      $FULLTEXT_API_HOST
+      $RESOLVER_SETTINGS'
+
+envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+
+if [ -z "$1" ]; then
+      echo "No container params. Running default nginx command"
+      nginx
+else
+      exec "$@"
+fi
+
