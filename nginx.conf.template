@@ -36,7 +36,7 @@ http {
   upstream iiif_image {
     keepalive 15;
     # Definition of one or more image server hosts. Format for each server is 'server <hostname>;'
-    ${PROXY_IMAGE_HOSTS};
+    ${PROXY_IMAGE_HOSTS}
   }
 
   upstream iiif_presentation_manifest {
