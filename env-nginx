@@ -5,9 +5,9 @@
 NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
 export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
 
-vars='$PROXY_IMAGE_HOST
+vars='$API_KEY
+      $PROXY_IMAGE_HOSTS
       $MANIFEST_API_HOST
-      $FULLTEXT_API_KEY
       $FULLTEXT_API_HOST
       $RESOLVER_SETTINGS'
 
