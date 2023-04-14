@@ -1,4 +1,5 @@
 # Based on: https://raw.githubusercontent.com/cloudfoundry/nginx-buildpack/v1.0.3/fixtures/mainline/nginx.conf
+# Only difference between test and prouction configuration is the use of 2 iiif_image hosts
 
 worker_processes auto;
 worker_rlimit_nofile 4096;
@@ -34,7 +35,8 @@ http {
 
   upstream iiif_image {
     keepalive 15;
-    server ${PROXY_IMAGE_HOST};
+    # Definition of one or more image server hosts. Format for each server is 'server <hostname>;'
+    ${PROXY_IMAGE_HOSTS};
   }
 
   upstream iiif_presentation_manifest {
@@ -88,7 +90,7 @@ http {
         proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest$is_args$args;
       }
       if ($arg_wskey = "") {
-        proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest?wskey=${FULLTEXT_API_KEY}&$args;
+        proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest?wskey=${API_KEY}&$args;
       }
     }
 
