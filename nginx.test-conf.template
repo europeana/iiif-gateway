@@ -1,0 +1,121 @@
+# Based on: https://raw.githubusercontent.com/cloudfoundry/nginx-buildpack/v1.0.3/fixtures/mainline/nginx.conf
+# Only difference between test and prouction configuration is the use of 2 iiif_image hosts
+
+worker_processes auto;
+worker_rlimit_nofile 4096;
+daemon off;
+
+error_log stderr warn;
+
+events {
+  use epoll;
+  worker_connections 4096;
+  multi_accept on;
+}
+
+http {
+  charset utf-8;
+  default_type application/octet-stream;
+  include mime.types;
+  sendfile on;
+
+  tcp_nodelay on;
+  tcp_nopush on;
+  keepalive_timeout 90s;
+  keepalive_requests 100;
+ 	types_hash_max_size 2048;
+
+
+  # Override some buffer limitations, will prevent DDOS too.
+  #
+  client_body_buffer_size 10K;
+  client_header_buffer_size 1k;
+  client_max_body_size 8m;
+  large_client_header_buffers 2 1k;
+
+  upstream iiif_image {
+    keepalive 15;
+    server ${PROXY_IMAGE_HOST1};
+    server ${PROXY_IMAGE_HOST2};
+  }
+
+  upstream iiif_presentation_manifest {
+    keepalive 25;
+    server ${MANIFEST_API_HOST};
+  }
+
+  upstream iiif_presentation_fulltext {
+    keepalive 25;
+    server ${FULLTEXT_API_HOST};
+  }
+
+ include nginx.conf.d/http-server-*.conf;
+  server {
+    listen 80;
+    root public;
+    index index.html;
+
+    add_header 'Access-Control-Allow-Origin' '*' always;
+
+    resolver ${RESOLVER_SETTINGS};
+
+    location / {
+      include nginx.conf.d/location-cors.conf;
+    }
+
+# Used by Kubernetes health checks
+  location /nginx-health {
+       access_log off;
+       default_type application/json;
+       return 200 '{"status":"healthy"}';
+   }
+
+    # IIIF Image (uses servers in upstream section)
+    location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
+        proxy_set_header Host ${PROXY_IMAGE_HOST};
+        proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
+    }
+
+    location ~ ^/(records|data-providers)/(.*) {
+      proxy_set_header Host ${PROXY_IMAGE_HOST};
+      proxy_pass http://iiif_image/$1/$2;
+    }
+
+    # IIIF Presentation: Manifest
+    location ~ ^/presentation/(.*)/manifest {
+      gzip_types *;
+      proxy_set_header Host ${MANIFEST_API_HOST};
+
+      if ($arg_wskey != "") {
+        proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest$is_args$args;
+      }
+      if ($arg_wskey = "") {
+        proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest?wskey=${FULLTEXT_API_KEY}&$args;
+      }
+    }
+
+    # IIIF Presentation: Fulltext within-issue search
+    location ~ ^/presentation/(.*)/search {
+      gzip_types *;
+      # handle whitespaces in search query (see EA-2276)
+      rewrite  ^/presentation/(.*)/search$ /presentation/$1/search break;
+      proxy_set_header Host ${FULLTEXT_API_HOST};
+      proxy_pass http://iiif_presentation_fulltext;
+    }
+
+    # IIIF Presentation: Fulltext summary
+    location ~ ^/presentation/(.*)/annopage$ {
+      gzip_types *;
+      proxy_set_header Host ${FULLTEXT_API_HOST};
+      proxy_pass http://iiif_presentation_fulltext/presentation/$1/annopage$is_args$args;
+    }
+
+    # IIIF Presentation: Fulltext annotation and annopages
+    location ~ ^/presentation/(.*)/(anno|annopage)/([^/]*)$ {
+      gzip_types *;
+      proxy_set_header Host ${FULLTEXT_API_HOST};
+      proxy_pass http://iiif_presentation_fulltext/presentation/$1/$2/$3$is_args$args;
+    }
+
+  }
+}
