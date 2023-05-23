@@ -9,7 +9,8 @@ vars='$API_KEY
       $PROXY_IMAGE_HOSTS
       $MANIFEST_API_HOST
       $FULLTEXT_API_HOST
-      $RESOLVER_SETTINGS'
+      $RESOLVER_SETTINGS
+      $ROOT_REDIRECT_URL'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
