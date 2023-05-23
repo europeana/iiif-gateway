@@ -18,6 +18,8 @@ http {
     default_type application/octet-stream;
     include mime.types;
     sendfile on;
+    # EA-2236: Disable access logs
+    access_log off;
 
     tcp_nodelay on;
     tcp_nopush on;
@@ -70,7 +72,6 @@ http {
 
         # Used by Kubernetes health checks
         location /nginx-health {
-            access_log off;
             default_type application/json;
             return 200 '{"status":"healthy"}';
         }
