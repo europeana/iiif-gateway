@@ -6,11 +6,13 @@ NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\
 export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
 
 vars='$API_KEY
-      $PROXY_IMAGE_HOSTS
-      $MANIFEST_API_HOST
       $FULLTEXT_API_HOST
+      $MANIFEST_API_HOST
+      $PROXY_IMAGE_HOST
+      $PROXY_IMAGE_HOST2
       $RESOLVER_SETTINGS
-      $ROOT_REDIRECT_URL'
+      $ROOT_REDIRECT_URL
+      $SERVER_NAME'
 
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
