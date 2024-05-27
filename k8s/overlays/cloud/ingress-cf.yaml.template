@@ -1,0 +1,51 @@
+# This is a copy of the other ingress to use routes to access IIIF Gateway via Cloudflare (for testing purposes)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iiif-gateway-api-cf-ingress
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host: ${K8S_HOSTNAME_CF}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: iiif-gateway-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - ${K8S_HOSTNAME_CF}
+    secretName: ${K8S_HOSTNAME_CF_SECRET}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iiif-gateway-image-cf-ingress
+  annotations:
+     nginx.ingress.kubernetes.io/proxy-buffering: "on"
+     nginx.ingress.kubernetes.io/server-snippet: |
+       proxy_cache ${NGINX_PROXY_CACHE_ZONE};
+       proxy_cache_use_stale updating;
+       proxy_cache_valid 200 302 301 2h;
+       add_header X-Cache-Status $upstream_cache_status;
+spec:
+  ingressClassName: public-iks-k8s-nginx
+  rules:
+  - host: ${K8S_HOSTNAME_CF}
+    http:
+      paths:
+      - path: /image
+        pathType: Prefix
+        backend:
+          service:
+            name: iiif-gateway-service
+            port:
+              number: 80
+  tls:
+    - hosts:
+      - ${K8S_HOSTNAME_CF}
+      secretName: ${K8S_HOSTNAME_CF_SECRET}
