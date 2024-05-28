@@ -5,7 +5,7 @@ resources:
   - ../../base
   - service.yaml
   - ingress.yaml
-  - ingress-cf.yml
+  - ingress-cf.yaml
   - hpa.yaml
 
 patches:
