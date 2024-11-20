@@ -95,7 +95,8 @@ http {
         location ~ ^/presentation/(.*)/manifest {
             gzip_types *;
             proxy_set_header Host ${MANIFEST_API_HOST};
-            if_modified_since before;
+            proxy_set_header If-Modified-Since      $http_if_modified_since;
+            proxy_set_header If-None-Match          $http_if_none_match;
             if ($arg_wskey != "") {
                 proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest$is_args$args;
             }
