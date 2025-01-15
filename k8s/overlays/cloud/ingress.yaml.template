@@ -28,12 +28,6 @@ metadata:
   name: iiif-gateway-image-ingress
   annotations:
      cert-manager.io/issuer: letsencrypt-production
-     nginx.ingress.kubernetes.io/proxy-buffering: "on"
-     nginx.ingress.kubernetes.io/server-snippet: |
-       proxy_cache ${NGINX_PROXY_CACHE_ZONE};
-       proxy_cache_use_stale updating;
-       proxy_cache_valid 200 302 301 2h;
-       add_header X-Cache-Status $upstream_cache_status;
 spec:
   ingressClassName: public-iks-k8s-nginx
   rules:
