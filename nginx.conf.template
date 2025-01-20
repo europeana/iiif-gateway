@@ -48,7 +48,7 @@ http {
     include nginx.conf.d/http-server-*.conf;
     server {
         listen 80;
-        root public;
+        root /usr/share/nginx/html;
         index index.html;
 
         add_header 'Access-Control-Allow-Origin' '*' always;
