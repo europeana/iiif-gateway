@@ -128,7 +128,7 @@ http {
        # New IIIF Presentation API : Collection endpoints
 
        # Retrieve Collection
-        location = /collection$ {
+        location ~ /collection/([^/])$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
             proxy_pass http://iiif_presentation_collection/collection;
