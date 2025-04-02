@@ -45,6 +45,12 @@ http {
         server ${FULLTEXT_API_HOST};
     }
 
+
+    upstream iiif_presentation_collection {
+        keepalive 25;
+        server ${IIIF_PRESENTATION_API_HOST};
+    }
+
     include nginx.conf.d/http-server-*.conf;
     server {
         listen 80;
@@ -118,5 +124,41 @@ http {
             proxy_set_header Host ${FULLTEXT_API_HOST};
             proxy_pass http://iiif_presentation_fulltext/presentation/$1/$2/$3$is_args$args;
         }
+
+       # New IIIF Presentation API : Collection endpoints
+
+       # Retrieve Collection
+        location ~ ^/collection$ {
+            gzip_types *;
+            proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_pass http://iiif_presentation_collection/collection;
+        }
+
+         # Retrieve gallery Collection
+          location ~ ^/collection/gallery$ {
+               gzip_types *;
+               proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+
+               if ($arg_wskey != "") {
+                     proxy_pass http://iiif_presentation_collection/collection/gallery$is_args$args;
+               }
+               if ($arg_wskey = "") {
+                     proxy_pass http://iiif_presentation_collection/collection/gallery?wskey=${API_KEY}&$args;
+               }
+       }
+
+           # Retrieve gallery
+            location ~ ^/collection/gallery/(.*)$ {
+                gzip_types *;
+                proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+                if ($arg_wskey != "") {
+                     proxy_pass http://iiif_presentation_collection/collection/gallery/$1$is_args$args;
+                 }
+                if ($arg_wskey = "") {
+                    proxy_pass http://iiif_presentation_collection/collection/gallery/$1?wskey=${API_KEY}&$args;
+                 }
+
+        }
+
     }
 }
