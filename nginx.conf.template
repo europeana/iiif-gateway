@@ -136,14 +136,14 @@ http {
         location ~ ^/collection/gallery$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-            proxy_pass http://iiif_presentation_collection$is_args$args;
+            proxy_pass http://iiif_presentation_collection;
         }
 
         # IIIF Collection : Retrieve gallery
         location ~ ^/collection/gallery/(\d*)$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-            proxy_pass http://iiif_presentation_collection/$1;
+            proxy_pass http://iiif_presentation_collection$1$is_args$args;
         }
     }
 }
