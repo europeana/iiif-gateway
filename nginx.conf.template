@@ -130,8 +130,10 @@ http {
        # Retrieve Collection
         location ~ ^/collection/([^/])$ {
             gzip_types *;
+            rewrite ^ $request_uri;
+            add_header X-debug-message "I am here in Retrieve Collection" ;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-            proxy_pass http://iiif_presentation_collection/collection;
+            proxy_pass http://iiif_presentation_collection/$1;
         }
     }
 }
