@@ -45,7 +45,6 @@ http {
         server ${FULLTEXT_API_HOST};
     }
 
-
     upstream iiif_presentation_collection {
         keepalive 25;
         server ${IIIF_PRESENTATION_API_HOST};
@@ -125,29 +124,24 @@ http {
             proxy_pass http://iiif_presentation_fulltext/presentation/$1/$2/$3$is_args$args;
         }
 
-       # New IIIF Presentation API : Collection endpoints
 
-       # Retrieve Collection
+        # IIIF Collection : Retrieve collections
         location ~ ^/collection$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
             proxy_pass http://iiif_presentation_collection;
         }
-
-        # Retrieve gallery Collection
-         location ~ ^/collection/gallery$ {
+        # IIIF Collection : Retrieve collections gallery
+        location ~ ^/collection/gallery$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-            proxy_pass http://iiif_presentation_collection
-         }
-
-       # Retrieve gallery
-          location ~ ^/collection/gallery/(.*)$ {
-             gzip_types *;
-             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-             proxy_pass http://iiif_presentation_collection/$1
-          }
-
-       }
+            proxy_pass http://iiif_presentation_collection;
+        }
+        # IIIF Collection : Retrieve gallery
+        location ~ ^/collection/gallery/(.*)$ {
+            gzip_types *;
+            proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_pass http://iiif_presentation_collection/$1;
+        }
     }
-
+}
