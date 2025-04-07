@@ -142,7 +142,7 @@ http {
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
 
             if ($arg_wskey != "") {
-                 proxy_pass http://iiif_presentation_collectionis_args$args;
+                 proxy_pass http://iiif_presentation_collection/collection/gallery$is_args$args;
             }
             if ($arg_wskey = "") {
                  proxy_pass http://iiif_presentation_collection?wskey=${API_KEY}&$args;
