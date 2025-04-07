@@ -130,9 +130,8 @@ http {
        # Retrieve Collection
         location ~ ^/collection$ {
             gzip_types *;
-            rewrite ^ $request_uri;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
-            proxy_pass http://iiif_presentation_collection/$1;
+            proxy_pass http://iiif_presentation_collection;
         }
     }
 }
