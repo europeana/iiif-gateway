@@ -140,7 +140,7 @@ http {
         }
 
         # IIIF Collection : Retrieve gallery
-        location ~ ^/collection/gallery/(.*)$ {
+        location ~ ^/collection/gallery/(\d*)$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
             proxy_pass http://iiif_presentation_collection/$1;
