@@ -45,6 +45,11 @@ http {
         server ${FULLTEXT_API_HOST};
     }
 
+    upstream iiif_presentation_collection {
+        keepalive 25;
+        server ${IIIF_PRESENTATION_API_HOST};
+    }
+
     include nginx.conf.d/http-server-*.conf;
     server {
         listen 80;
@@ -117,6 +122,28 @@ http {
             gzip_types *;
             proxy_set_header Host ${FULLTEXT_API_HOST};
             proxy_pass http://iiif_presentation_fulltext/presentation/$1/$2/$3$is_args$args;
+        }
+
+
+        # IIIF Collection : Retrieve collections
+        location ~ ^/collection$ {
+            gzip_types *;
+            proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_pass http://iiif_presentation_collection;
+        }
+
+        # IIIF Collection : Retrieve collections gallery
+        location ~ ^/collection/gallery$ {
+            gzip_types *;
+            proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_pass http://iiif_presentation_collection;
+        }
+
+        # IIIF Collection : Retrieve gallery
+        location ~ ^/collection/gallery/(.*)$ {
+            gzip_types *;
+            proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_pass http://iiif_presentation_collection/collection/gallery/$1$is_args$args;
         }
     }
 }
