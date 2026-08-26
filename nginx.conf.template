@@ -55,8 +55,9 @@ http {
 
         # HTTPS enforcement should be done within Kubernetes ingress
         # "upstream" servers do not use resolver settings by default (paid option), so we proxy directly to the urls
-        set $iiif_image ${PROXY_IMAGE_HOST};
         resolver ${RESOLVER_SETTINGS};
+        set $iiif_image https://${PROXY_IMAGE_HOST};
+
 
         add_header 'Access-Control-Allow-Origin' '*' always;
 
