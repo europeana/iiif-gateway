@@ -79,12 +79,14 @@ http {
         location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
+            proxy_set_header X-Forwarded-For ${SERVER_NAME};
             proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
         }
 
         location ~ ^/(records|data-providers)/(.*) {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
+            proxy_set_header X-Forwarded-For ${SERVER_NAME};
             proxy_pass http://iiif_image/$1/$2;
         }
 
