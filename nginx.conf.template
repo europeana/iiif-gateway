@@ -79,14 +79,14 @@ http {
         location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
-            proxy_set_header X-Forwarded-For ${SERVER_NAME};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
         }
 
         location ~ ^/(records|data-providers)/(.*) {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
-            proxy_set_header X-Forwarded-For ${SERVER_NAME};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_image/$1/$2;
         }
 
@@ -94,6 +94,7 @@ http {
         location ~ ^/presentation/(.*)/manifest {
             gzip_types *;
             proxy_set_header Host ${MANIFEST_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
             if ($arg_wskey != "") {
                 proxy_pass http://iiif_presentation_manifest/presentation/$1/manifest$is_args$args;
@@ -109,6 +110,7 @@ http {
             # handle whitespaces in search query (see EA-2276)
             rewrite  ^/presentation/(.*)/search$ /presentation/$1/search break;
             proxy_set_header Host ${FULLTEXT_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_fulltext;
         }
 
@@ -116,6 +118,7 @@ http {
         location ~ ^/presentation/(.*)/annopage$ {
             gzip_types *;
             proxy_set_header Host ${FULLTEXT_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_fulltext/presentation/$1/annopage$is_args$args;
         }
 
@@ -123,6 +126,7 @@ http {
         location ~ ^/presentation/(.*)/(anno|annopage)/([^/]*)$ {
             gzip_types *;
             proxy_set_header Host ${FULLTEXT_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_fulltext/presentation/$1/$2/$3$is_args$args;
         }
 
@@ -131,6 +135,7 @@ http {
         location ~ ^/collection$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_collection;
         }
 
@@ -138,6 +143,7 @@ http {
         location ~ ^/collection/gallery$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_collection;
         }
 
@@ -145,6 +151,7 @@ http {
         location ~ ^/collection/gallery/(.*)$ {
             gzip_types *;
             proxy_set_header Host ${IIIF_PRESENTATION_API_HOST};
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_pass http://iiif_presentation_collection/collection/gallery/$1$is_args$args;
         }
     }
