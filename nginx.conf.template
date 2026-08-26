@@ -31,8 +31,6 @@ http {
         keepalive 15;
         # Definition of image server host.
         server ${PROXY_IMAGE_HOST};
-        # HACK: we can add an additional host here, but need to set that variable to "server <hostname>;"
-        ${PROXY_IMAGE_HOST2}
     }
 
     upstream iiif_presentation_manifest {
@@ -80,14 +78,14 @@ http {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
+            proxy_pass https://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
         }
 
         location ~ ^/(records|data-providers)/(.*) {
             # For production we need to specifically set a proper public server name (see also EA-3444)
             proxy_set_header Host ${PROXY_IMAGE_HOST};
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_pass http://iiif_image/$1/$2;
+            proxy_pass https://iiif_image/$1/$2;
         }
 
         # IIIF Presentation: Manifest
