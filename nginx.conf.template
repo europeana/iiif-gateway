@@ -29,10 +29,7 @@ http {
 
     upstream iiif_image {
         keepalive 15;
-        # Definition of image server host.
-        server ${PROXY_IMAGE_HOST};
-        # HACK: we can add an additional host here, but need to set that variable to "server <hostname>;"
-        ${PROXY_IMAGE_HOST2}
+        server ${ECLOUD_IMAGE_HOST};
     }
 
     upstream iiif_presentation_manifest {
