@@ -77,14 +77,12 @@ http {
 
         # IIIF Image (uses servers in upstream section)
         location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
-            # For production we need to specifically set a proper public server name (see also EA-3444)
-            proxy_set_header Host ${SERVER_NAME};
+            proxy_set_header Host ${ECLOUD_IMAGE_HOST};
             proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
         }
 
         location ~ ^/(records|data-providers)/(.*) {
-            # For production we need to specifically set a proper public server name (see also EA-3444)
-            proxy_set_header Host ${SERVER_NAME};
+            proxy_set_header Host ${ECLOUD_IMAGE_HOST};
             proxy_pass http://iiif_image/$1/$2;
         }
 
