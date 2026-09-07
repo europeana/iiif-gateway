@@ -5,7 +5,8 @@ worker_processes auto;
 worker_rlimit_nofile 4096;
 daemon off;
 
-error_log stderr warn;
+#error_log stderr warn;
+error_log stderr debug;
 
 events {
     use epoll;
