@@ -1,4 +1,4 @@
-FROM nginx-debug:1.23
+FROM nginx:1.23
 
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 

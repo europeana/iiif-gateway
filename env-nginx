@@ -16,8 +16,8 @@ vars='$API_KEY
 envsubst "${vars}" < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 if [ -z "$1" ]; then
-      echo "No container params. Running default nginx command"
-      nginx
+      echo "No container params. Running debug nginx command"
+      nginx nginx-debug
 else
       exec "$@"
 fi
