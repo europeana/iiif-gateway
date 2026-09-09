@@ -73,15 +73,9 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        # IIIF Image (uses servers in upstream section)
-        location ~ ^/image/([A-Z0-9]+)/([^/]+)/([^/]+)/(.*) {
+        location ~ ^/(records|data-providers|image)/ {
             proxy_set_header Host ${ECLOUD_IMAGE_HOST};
-            proxy_pass http://iiif_image/records/$1/representations/$2/versions/$3/files/$4;
-        }
-
-        location ~ ^/(records|data-providers)/(.*) {
-            proxy_set_header Host ${ECLOUD_IMAGE_HOST};
-            proxy_pass http://iiif_image/$1/$2;
+            proxy_pass http://iiif_image;
         }
 
         # IIIF Presentation: Manifest
