@@ -6,7 +6,7 @@ NAMESERVER=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\
 export RESOLVER_SETTINGS="${NAMESERVER} ${RESOLVER_SETTINGS}"
 
 vars='$API_KEY
-      $ECLOUD_IMAGE_HOST1
+      $ECLOUD_IMAGE_HOST
       $ECLOUD_IMAGE_HOST2
       $ECLOUD_IMAGE_HOST3
       $FULLTEXT_API_HOST
