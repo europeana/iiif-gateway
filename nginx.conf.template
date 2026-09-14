@@ -29,7 +29,9 @@ http {
 
     upstream iiif_image {
         keepalive 15;
-        server ${ECLOUD_IMAGE_HOST};
+        server ${ECLOUD_IMAGE_HOST1};
+        server ${ECLOUD_IMAGE_HOST2};
+        server ${ECLOUD_IMAGE_HOST3};
     }
 
     upstream iiif_presentation_manifest {
