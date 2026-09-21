@@ -72,10 +72,12 @@ http {
             return 200 '{"status":"healthy"}';
         }
 
-        # IIIF images from eCloud servers
+        # IIIF images and info from eCloud servers
         # Note that data-providers is deprecated and not supported by the new ecloud
+        # Also note that on request of PCSS we set X-Original-URI so they can use it in their responses (if needed)
         location ~ ^/(image|records|data-providers)/ {
             proxy_set_header Host ${ECLOUD_IMAGE_HOST};
+            proxy_set_header X-Original-URI $scheme://$host$request_uri;
             proxy_pass http://iiif_image;
         }
 
